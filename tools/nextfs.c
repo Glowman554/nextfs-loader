@@ -30,7 +30,7 @@ struct nextfs {
 };
 
 void init_nextfs(struct nextfs* fs, void* data) {
-	fs->reader((uint8_t*) &fs->header, 0, 512, data);
+	fs->reader((uint8_t*) &fs->header, 17, 512, data);
 	for (int i = 0; i < 4; i++) {
 		fs->reader((uint8_t*) fs->file_header + 512 * i, i + 18, 512, data);
 	}
