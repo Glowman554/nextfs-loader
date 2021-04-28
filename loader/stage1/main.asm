@@ -17,7 +17,7 @@ stage1_main:
 	call find_file
 
 	mov bx, cx
-	mov cx, 0xff00
+	mov cx, 0x0 ; load kernel at 0x0
 	call load_file
 
 	call enable_a20
@@ -47,7 +47,7 @@ protected_mode:
 	mov fs, ax
 	mov gs, ax
 
-	jmp 0xff00 ; jump to the kernel :)
+	jmp 0x0 ; jump to the kernel :)
 
 %include "print.asm"
 %include "disk.asm"
