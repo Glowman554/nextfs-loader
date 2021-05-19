@@ -1,0 +1,3 @@
+[submodule "loader/stage1/nyanmbr"]
+	path = loader/stage1/nyanmbr
+	url = https://github.com/brainsmoke/nyanmbr

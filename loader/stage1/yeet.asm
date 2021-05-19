@@ -46,7 +46,15 @@ yeet:
 	call pstring
 	jmp .yeet_done
 
-.yeet_done
+.yeet_done:
+	mov bx, .yeet_nyan_msg
+	call pstring
+	
+	mov ax, 0
+	mov ah, 10h
+	int 0x16
+
+	jmp do_nyan
 	hlt
 
 .yeet_msg: db "Something is realy wrong: ", 0
@@ -54,3 +62,5 @@ yeet:
 .yeet_msg_magic_err: db "NextFS magic invalid!",10, 13, 0
 .yeet_msg_file_err: db "File not found!",10, 13, 0
 .yeet_msg_unknown_err: db "Unknown error!", 10, 13, 0
+
+.yeet_nyan_msg: db 10, 13, "Press any key to start nyan cat uwu!", 10, 13, 0

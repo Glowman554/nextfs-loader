@@ -5,23 +5,25 @@
 FILE* fp;
 struct nextfs fs;
 
-void r(uint8_t* buffer, uint32_t start_sector, int count, void* data) {
+void r(uint8_t* b, uint32_t start_sector, int count, void* data) {
 	printf("file -> %d\n", start_sector);
 	FILE* f = (FILE*) data;
 	fseek(f, start_sector * 512, SEEK_SET);
-	fread(buffer, 1, count, f);
+	fread(b, 1, count, f);
 }
 
-void w(uint8_t* buffer, uint32_t start_sector, int count, void* data) {
+void w(uint8_t* b, uint32_t start_sector, int count, void* data) {
 	printf("file <- %d\n", start_sector);
 	FILE* f = (FILE*) data;
 	fseek(f, start_sector * 512, SEEK_SET);
-	fwrite(buffer, 1, count, f);
+	fwrite(b, 1, count, f);
 	fflush(f);
 }
 
+uint8_t buffer[1024 * 64];
+
 void insert(char* file, char* internal_file) {
-	uint8_t buffer[1024*64];
+	//uint8_t buffer[1024*64];
 
 	FILE* data = fopen(file, "rb");
 	if (data == NULL) {
@@ -48,7 +50,6 @@ void write_bootloader(char* file) {
 	fseek(loader, 0, SEEK_END);
 	int sz = ftell(loader);
 	fseek(loader, 0, SEEK_SET);	
-	uint8_t buffer[8705];
 	fread(buffer, 1, sz, loader);
 	fseek(fp, 0, SEEK_SET);
 	fwrite(buffer, 1, sz, fp);

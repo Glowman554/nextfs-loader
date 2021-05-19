@@ -55,6 +55,7 @@ protected_mode:
 %include "nextfs.asm"
 %include "string.asm"
 %include "gdt.asm"
+%include "nyan.asm"
 
 ;.....................................data.....................................
 

@@ -63,27 +63,27 @@ void print_nextfs(struct nextfs* fs) {
 	
 }
 
-void new_file_nextfs(struct nextfs* fs, void* data, char* name, uint8_t* buffer, int size) {
+void new_file_nextfs(struct nextfs* fs, void* data, char* name, uint8_t* b, int size) {
 	strcpy(fs->file_header[fs->header.file_header_index].name, name);
 	fs->file_header[fs->header.file_header_index].start_sector = fs->header.current_sector;
 	fs->file_header[fs->header.file_header_index].length = size / 512;
 
 	int sectors_needed = size / 512;
 	for (int i = 0; i < sectors_needed + 1; i++) {
-		fs->writer(buffer + 512 * i, fs->header.current_sector, 512, data);
+		fs->writer(b + 512 * i, fs->header.current_sector, 512, data);
 		fs->header.current_sector++;
 	}
 	fs->header.file_header_index++;
 }
 
-void load_file_nextfs(struct nextfs* fs, void* data, char* name, uint8_t* buffer) {
+void load_file_nextfs(struct nextfs* fs, void* data, char* name, uint8_t* b) {
 	for (int i = 0; i < fs->header.file_header_index; i++) {
 		if(strcmp(fs->file_header[i].name, name) == 0) {
 
 			int sectors_needed = fs->file_header[i].length;
 
 			for (int j = 0; j < sectors_needed + 1; j++) {
-				fs->reader((uint8_t*) buffer + 512 * i, fs->file_header[i].start_sector + j, 512, data);
+				fs->reader((uint8_t*) b + 512 * i, fs->file_header[i].start_sector + j, 512, data);
 			}
 		}
 	}

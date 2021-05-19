@@ -2,7 +2,9 @@ make -C loader
 make -C tools
 make -C kernel
 
-./tools/fstool.elf ./loader/loader.bin ./kernel/kernel.bin:kernel
+read -p "kernel name: " kernel_name
+
+./tools/fstool.elf ./loader/loader.bin ./kernel/kernel.bin:$kernel_name
 
 make -C loader clean
 make -C tools clean
