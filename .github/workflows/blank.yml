@@ -27,7 +27,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Setup
-        run: sudo apt install nasm make
+        run: sudo apt install nasm make gcc-i686-linux-gnu
       
       - name: build
         run: echo kernel | sh build.sh
