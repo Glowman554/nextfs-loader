@@ -20,7 +20,7 @@ void w(uint8_t* b, uint32_t start_sector, int count, void* data) {
 	fflush(f);
 }
 
-uint8_t buffer[1024 * 64];
+uint8_t buffer[1024 * 64 * 128];
 
 void insert(char* file, char* internal_file) {
 	//uint8_t buffer[1024*64];

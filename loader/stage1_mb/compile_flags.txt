@@ -1,0 +1,6 @@
+-m32
+-nostdinc
+-g
+-fno-stack-protector
+-Iinclude
+-ffreestanding
