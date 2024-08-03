@@ -20,7 +20,7 @@ SMAP_entry_t* memory_map = (SMAP_entry_t*) 0x500;
 
 multiboot_info_t* mb_info = (multiboot_info_t*) 0x800000;
 multiboot_mmap_t* mb_mmap = (multiboot_mmap_t*) 0x801000;
-#define CMDLINE "--keymap=test:/keymap.mkm --init=test:/bin/init.elf"
+#define CMDLINE "--keymap=test:/keymap.mkm --init=test:/bin/init.elf --serial"
 multiboot_info_t* build_mb_info() {
 	mb_info->mbs_mmap_length = memory_map->base * sizeof(multiboot_mmap_t);
 	mb_info->mbs_mmap_addr = mb_mmap;
