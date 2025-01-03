@@ -20,8 +20,8 @@ SMAP_entry_t* memory_map = (SMAP_entry_t*) 0x500;
 
 multiboot_info_t* mb_info = (multiboot_info_t*) 0x800000;
 multiboot_mmap_t* mb_mmap = (multiboot_mmap_t*) 0x801000;
-#define CMDLINE "--keymap=test:/keymap.mkm --init=test:/bin/init.elf --serial"
-multiboot_info_t* build_mb_info() {
+
+multiboot_info_t* build_mb_info(char* cmdline) {
 	mb_info->mbs_mmap_length = memory_map->base * sizeof(multiboot_mmap_t);
 	mb_info->mbs_mmap_addr = mb_mmap;
 
@@ -36,13 +36,24 @@ multiboot_info_t* build_mb_info() {
 
 
 	mb_info->mbs_cmdline = (uint32_t) &mb_info[1];
-	memcpy(&mb_info[1], CMDLINE, sizeof(CMDLINE));
+	memcpy(&mb_info[1], cmdline, strlen(cmdline) + 1);
 
 	return mb_info;
 }
 
+void load_file(unsigned short port, int master, struct nextfs_file_header* header, void* buffer) {
+	puts("loading ");
+	puts(header->name);
+	puts("...\n");
+
+	for (int i = 0; i < header->length + 1; i++) {
+		read28_ata(port, master, header->start_sector + i, (unsigned char*) buffer + 512 * i);
+	}
+}
+
 void* kernel_buffer = (void*) 0x80f000;
 void try_nextfs(unsigned short port, int master) {
+	char cmdline[512] = "--keymap=test:/keymap.mkm --init=test:/init.mex --serial";
 	read28_ata(port, master, 17, (uint8_t*) &header);
 	if (header.magic != MAGIC) {
 		return;
@@ -53,19 +64,29 @@ void try_nextfs(unsigned short port, int master) {
 	}
 
 	for (int i = 1; i < header.file_header_index; i++) {
+		if (strcmp(file_header[i].name, "cmdline.txt") == 0) {
+			load_file(port, master, &file_header[i], cmdline);
 
-		if (strcmp(file_header[i].name, "mckrnl.elf") == 0) {
-			puts("loading ");
-			puts(file_header[i].name);
-			puts("...\n");
-
-			for (int j = 0; j < file_header[i].length + 1; j++) {
-				read28_ata(port, master, file_header[i].start_sector + j, (unsigned char*) kernel_buffer + 512 * j);
+			for (int i = 0; i < sizeof(cmdline); i++) {
+				if (cmdline[i] == '$') {
+					cmdline[i] = 0;
+					break;
+				}
 			}
+
+			puts("cmdline: ");
+			puts(cmdline);
+			puts("\n");
+		}
+	}
+
+	for (int i = 1; i < header.file_header_index; i++) {
+		if (strcmp(file_header[i].name, "kernel.elf") == 0) {
+			load_file(port, master, &file_header[i], kernel_buffer);
 
 			void* entry = init_elf(kernel_buffer);
 			if (entry) {
-				asm volatile ("jmp %%eax" :: "a"(entry), "b"(build_mb_info()));
+				asm volatile ("jmp %%eax" :: "a"(entry), "b"(build_mb_info(cmdline)));
 			}
 		}
 	}
@@ -85,7 +106,7 @@ void _main(void) {
 	}
 #endif
 
-	puts("NextFS loader stage1 (MicroOS) Copyright (C) 2023 Glowman554\n");
+	puts("NextFS loader stage1 (MicroOS) Copyright (C) 2023-2025 Glowman554\n");
 
 	if (test_ata(0x1F0, 1)) {
 		puts("ata0 master present\n");

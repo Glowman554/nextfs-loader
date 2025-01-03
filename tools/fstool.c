@@ -6,14 +6,14 @@ FILE* fp;
 struct nextfs fs;
 
 void r(uint8_t* b, uint32_t start_sector, int count, void* data) {
-	printf("file -> %d\n", start_sector);
+	// printf("file -> %d\n", start_sector);
 	FILE* f = (FILE*) data;
 	fseek(f, start_sector * 512, SEEK_SET);
 	fread(b, 1, count, f);
 }
 
 void w(uint8_t* b, uint32_t start_sector, int count, void* data) {
-	printf("file <- %d\n", start_sector);
+	// printf("file <- %d\n", start_sector);
 	FILE* f = (FILE*) data;
 	fseek(f, start_sector * 512, SEEK_SET);
 	fwrite(b, 1, count, f);

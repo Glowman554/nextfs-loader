@@ -10,6 +10,14 @@ int strcmp(char* str1, char* str2) {
 	return *str1 - *str2;
 }
 
+int strlen(char* str) {
+	int len = 0;
+	while (*str++) {
+		len++;
+	}
+	return len;
+}
+
 void* memcpy(void* dest, const void* src, int n) {
 	char* d = (char*) dest;
 	char* s = (char*) src;
