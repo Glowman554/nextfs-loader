@@ -64,6 +64,7 @@ void print_nextfs(struct nextfs* fs) {
 }
 
 void new_file_nextfs(struct nextfs* fs, void* data, char* name, uint8_t* b, int size) {
+	memset(fs->file_header[fs->header.file_header_index].name, 0, sizeof(fs->file_header[fs->header.file_header_index].name));
 	strcpy(fs->file_header[fs->header.file_header_index].name, name);
 	fs->file_header[fs->header.file_header_index].start_sector = fs->header.current_sector;
 	fs->file_header[fs->header.file_header_index].length = size / 512;
